@@ -4,7 +4,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket  = "terraform-up-and-running-state-rl"
+    bucket  = "terraform-state-rl"
     key     = "stage/s3/terraform.tfstate"
     region  = "us-east-1"
     encrypt = true
@@ -16,7 +16,7 @@ terraform {
 module "webserver_cluster" {
     source = "git@github.com:rodrigolopez0689/TerraformModules.git//services/webserver-cluster?ref=v0.0.1"
     cluster_name = "webservers-stage"
-    remote_state_bucket = "terraform-up-and-running-state-rl"
+    remote_state_bucket = "terraform-state-rl"
     remote_state_key = "stage/mysql/terraform.tfstate"
     server_port = 8080
     instance_type = "t2.micro"
