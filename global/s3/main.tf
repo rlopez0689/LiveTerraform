@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state"{
-    bucket = "terraform-state-rl"
+    bucket = "terraform-state-rlopez"
     force_destroy = true
     
     versioning {
