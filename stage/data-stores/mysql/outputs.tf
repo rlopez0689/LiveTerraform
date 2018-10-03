@@ -4,3 +4,7 @@ output "address" {
 output "port" {
       value = "${aws_db_instance.example.port}"
 }
+
+output "vpc_id" {
+    value = "${aws_vpc.stage-vpc.id}"
+}
