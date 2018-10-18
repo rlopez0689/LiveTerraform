@@ -2,6 +2,9 @@ provider "aws" {
     region = "us-east-1"
 }
 
+variable "zone_id" {}
+variable "domain_name" {}
+
 terraform {
   backend "s3" {
     bucket  = "terraform-state-rlopez"
@@ -19,6 +22,8 @@ module "webserver_cluster" {
     remote_state_key = "prod/mysql/terraform.tfstate"
     server_port = 8080
     instance_type = "t2.small"
+    route53_zone_id = "${var.zone_id}"
+    domain_name = "${var.domain_name}"
     min_size = 2
     max_size = 4
 }
