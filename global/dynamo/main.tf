@@ -1,3 +1,7 @@
+provider "aws" { 
+    region = "us-east-1"
+}
+
 # create a dynamodb table for locking the state file
 resource "aws_dynamodb_table" "dynamodb-terraform-state-lock-rl" {
   name = "terraform-state-lock-dynamo"
