@@ -12,26 +12,18 @@ terraform {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
-resource "aws_vpc" "prod-vpc" {
-  cidr_block = "10.0.0.0/16"
-
-  tags {
-    Name = "prod-vpc"
-  }
-}
-
-resource "aws_subnet" "subnet"{
-    count = "2"
-    vpc_id     = "${aws_vpc.prod-vpc.id}"
-    cidr_block = "${cidrsubnet(aws_vpc.prod-vpc.cidr_block, 8, count.index + 1)}"
-    availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+data "terraform_remote_state" "network"{
+    backend = "s3"
+    config {
+        bucket = "terraform-state-rlopez"
+        key = "prod/network/terraform.tfstate"
+        region = "us-east-1"
+    }
 }
 
 resource "aws_db_subnet_group" "default"{
     name = "prod-db-subgroup"
-    subnet_ids = ["${aws_subnet.subnet.*.id}"]
+    subnet_ids = ["${data.terraform_remote_state.network.private_subnets}"]
 }
 
 resource "aws_db_instance" "example" { 
