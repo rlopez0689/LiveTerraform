@@ -4,18 +4,16 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "terraform-state-rlopez"
     key = "stage/mysql/terraform.tfstate"
     region  = "us-east-1"
     encrypt = true
-    dynamodb_table = "terraform-state-lock-dynamo"
   }
 }
 
 data "terraform_remote_state" "network" {
       backend = "s3"
       config {
-        bucket = "terraform-state-rlopez"
+        bucket = "${var.bucket_name}"
         key = "stage/network/terraform.tfstate"
         region = "us-east-1"
       } 

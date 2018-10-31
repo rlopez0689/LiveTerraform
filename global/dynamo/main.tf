@@ -2,9 +2,10 @@ provider "aws" {
     region = "us-east-1"
 }
 
-# create a dynamodb table for locking the state file
-resource "aws_dynamodb_table" "dynamodb-terraform-state-lock-rl" {
-  name = "terraform-state-lock-dynamo"
+variable "dynamo_table_name" {}
+
+resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
+  name = "${var.dynamo_table_name}"
   hash_key = "LockID"
   read_capacity = 20
   write_capacity = 20
