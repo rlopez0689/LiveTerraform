@@ -2,16 +2,11 @@ provider "aws" {
     region = "us-east-1"
 }
 
-variable "zone_id" {}
-variable "domain_name" {}
-
 terraform {
   backend "s3" {
-    bucket  = "terraform-state-rlopez"
     key     = "stage/s3/terraform.tfstate"
     region  = "us-east-1"
     encrypt = true
-    dynamodb_table = "terraform-state-lock-dynamo"
   }
 }
 
@@ -19,7 +14,7 @@ terraform {
 module "webserver_cluster" {
     source = "git@github.com:rodrigolopez0689/TerraformModules.git//services/webserver-cluster?ref=v0.0.1"
     cluster_name = "webservers-stage"
-    remote_state_bucket = "terraform-state-rlopez"
+    remote_state_bucket = "${var.bucket_name}"
     remote_state_db_key = "stage/mysql/terraform.tfstate"
     remote_state_network_key = "stage/network/terraform.tfstate"
     server_port = 8080
