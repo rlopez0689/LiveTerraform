@@ -4,21 +4,29 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "terraform-state-rlopez"
     key = "prod/mysql/terraform.tfstate"
     region  = "us-east-1"
     encrypt = true
-    dynamodb_table = "terraform-state-lock-dynamo"
   }
 }
 
 data "terraform_remote_state" "network"{
     backend = "s3"
     config {
-        bucket = "terraform-state-rlopez"
+        bucket = "${var.bucket_name}"
         key = "prod/network/terraform.tfstate"
         region = "us-east-1"
     }
+}
+
+resource "aws_security_group" "db" {
+  vpc_id      = "${data.terraform_remote_state.network.vpc_id}"
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["${data.terraform_remote_state.network.public_subnets_cidr}"]
+  }
 }
 
 resource "aws_db_subnet_group" "default"{
@@ -26,13 +34,14 @@ resource "aws_db_subnet_group" "default"{
     subnet_ids = ["${data.terraform_remote_state.network.private_subnets}"]
 }
 
-resource "aws_db_instance" "example" { 
-    engine = "mysql"
+resource "aws_db_instance" "weatherdb" { 
+    engine = "postgres"
     db_subnet_group_name = "${aws_db_subnet_group.default.name}"
+    vpc_security_group_ids = ["${aws_security_group.db.id}"]
     allocated_storage = 10 
     instance_class = "db.t2.micro"
-    name = "example_database"
-    username = "admin"
+    name = "weatherdb"
+    username = "weatheruser"
     password = "${var.db_password}"
     skip_final_snapshot = true
 }

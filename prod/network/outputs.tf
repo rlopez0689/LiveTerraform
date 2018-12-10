@@ -8,3 +8,7 @@ output "public_subnets"{
 output "private_subnets"{
     value = "${slice(aws_subnet.subnets.*.id, 0, 2)}"
 }
+
+output "public_subnets_cidr"{
+    value = "${slice(aws_subnet.subnets.*.cidr_block, 2, 4)}"
+}
