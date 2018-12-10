@@ -12,7 +12,7 @@ terraform {
 
 
 module "webserver_cluster" {
-    source = "git@github.com:rodrigolopez0689/TerraformModules.git//services/webserver-cluster?ref=feature/alb"
+    source = "git@github.com:rodrigolopez0689/TerraformModules.git//services/webserver-cluster?ref=v0.0.3"
     cluster_name = "webservers-stage"
     remote_state_bucket = "${var.bucket_name}"
     remote_state_db_key = "stage/mysql/terraform.tfstate"
