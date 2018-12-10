@@ -12,15 +12,17 @@ terraform {
 
 
 module "webserver_cluster" {
-    source = "git@github.com:rodrigolopez0689/TerraformModules.git//services/webserver-cluster?ref=v0.0.1"
+    source = "git@github.com:rodrigolopez0689/TerraformModules.git//services/webserver-cluster?ref=feature/alb"
     cluster_name = "webservers-stage"
     remote_state_bucket = "${var.bucket_name}"
     remote_state_db_key = "stage/mysql/terraform.tfstate"
     remote_state_network_key = "stage/network/terraform.tfstate"
-    server_port = 8080
+    server_port = 80
     instance_type = "t2.micro"
     route53_zone_id = "${var.zone_id}"
     domain_name = "${var.domain_name}"
+    key_name = "RodAWS"
     min_size = 2
     max_size = 2
+    weather_api_key = "${var.weather_api_key}"
 }

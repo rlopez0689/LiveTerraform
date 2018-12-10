@@ -19,18 +19,29 @@ data "terraform_remote_state" "network" {
       } 
 }
 
+resource "aws_security_group" "db" {
+  vpc_id      = "${data.terraform_remote_state.network.vpc_id}"
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["${data.terraform_remote_state.network.public_subnets_cidr}"]
+  }
+}
+
 resource "aws_db_subnet_group" "default"{
     name = "stage-db-subgroup"
     subnet_ids = ["${data.terraform_remote_state.network.private_subnets}"]
 }
 
-resource "aws_db_instance" "example" { 
-    engine = "mysql"
+resource "aws_db_instance" "weatherdb" { 
+    engine = "postgres"
     db_subnet_group_name = "${aws_db_subnet_group.default.name}"
+    vpc_security_group_ids = ["${aws_security_group.db.id}"]
     allocated_storage = 10 
     instance_class = "db.t2.micro"
-    name = "stage_database"
-    username = "admin"
+    name = "weatherdb"
+    username = "weatheruser"
     password = "${var.db_password}"
     skip_final_snapshot = true
 }
