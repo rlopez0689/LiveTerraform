@@ -1,5 +1,5 @@
 # LiveTerraform
-Provide a basic infraestructure for multiple stages (staging and prod). Having a remote state on s3, a lock on dynamo db and a module source from a github repo.
+Provide a basic infraestructure for multiple stages (staging and prod) for the weather django app(https://github.com/rlopez0689/weather_project). Having a remote state on s3, a lock on dynamo db and a module source from a github repo.
 
 ![Infraestructure diagram](https://s3.amazonaws.com/myimagesrl/Web+App+Reference+Architecture+(4).png)
 
@@ -9,7 +9,8 @@ Provide a basic infraestructure for multiple stages (staging and prod). Having a
 * For each env:
   * A VPC
   * 4 subnets, 2 private(for rds) and 2 public(for ec2)
-  * One MySQL RDS with subnet group
+  * One Postgres RDS with subnet group
+  * Elasticcache with memcached
   * One webserver cluster with autoscaling group for ec2 and route3 entry for personal domain
 
 ## Terraform source module
@@ -33,6 +34,7 @@ Just fill the variables in the file
 * DB_PASSWORD
 * ZONE_ID
 * DOMAIN_NAME
+* WEATHER_API
 
 And then you can run the makefile:
 ```
